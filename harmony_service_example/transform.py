@@ -64,11 +64,10 @@ class HarmonyAdapter(BaseHarmonyAdapter):
                 Item(f'item-1-from-catalog-{cat.id}', None, [0, 0, 1, 1],
                      datetime.datetime.strptime('09/19/22 13:55:26', '%m/%d/%y %H:%M:%S'), {}),
                 Item(f'item-2-from-catalog-{cat.id}', None, [0, 0, 1, 2],
-                    datetime.datetime.strptime('09/19/22 13:55:26', '%m/%d/%y %H:%M:%S'), {})
+                     datetime.datetime.strptime('09/19/22 13:55:26', '%m/%d/%y %H:%M:%S'), {})
             ]
             cat.add_items(items)
         return (self.message, catalogs)
-
 
     def update_layernames(self, filename, layernames):
         """
