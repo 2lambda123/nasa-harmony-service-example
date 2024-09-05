@@ -26,7 +26,11 @@ from harmony_service_example.geo import clip_bbox
 
 mime_to_gdal = {"image/tiff": "GTiff", "image/png": "PNG", "image/gif": "GIF"}
 
-mime_to_extension = {"image/tiff": "tif", "image/png": "png", "image/gif": "gif"}
+mime_to_extension = {
+    "image/tiff": "tif",
+    "image/png": "png",
+    "image/gif": "gif"
+}
 
 mime_to_options = {"image/tiff": ["-co", "COMPRESS=LZW"]}
 
@@ -62,18 +66,16 @@ class HarmonyAdapter(BaseHarmonyAdapter):
                     f"item-1-from-catalog-{cat.id}",
                     None,
                     [0, 0, 1, 1],
-                    datetime.datetime.strptime(
-                        "09/19/22 13:55:26", "%m/%d/%y %H:%M:%S"
-                    ),
+                    datetime.datetime.strptime("09/19/22 13:55:26",
+                                               "%m/%d/%y %H:%M:%S"),
                     {},
                 ),
                 Item(
                     f"item-2-from-catalog-{cat.id}",
                     None,
                     [0, 0, 1, 2],
-                    datetime.datetime.strptime(
-                        "09/19/22 13:55:26", "%m/%d/%y %H:%M:%S"
-                    ),
+                    datetime.datetime.strptime("09/19/22 13:55:26",
+                                               "%m/%d/%y %H:%M:%S"),
                     {},
                 ),
             ]
@@ -110,9 +112,8 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         :param *args:
 
         """
-        self.logger.info(
-            args[0] + " " + " ".join(["'{}'".format(arg) for arg in args[1:]])
-        )
+        self.logger.info(args[0] + " " +
+                         " ".join(["'{}'".format(arg) for arg in args[1:]]))
         result_str = subprocess.check_output(args).decode("utf-8")
         return result_str.split("\n")
 
@@ -158,7 +159,8 @@ class HarmonyAdapter(BaseHarmonyAdapter):
 
         dstfiles = []
         for i, bbox in enumerate(bboxes):
-            dstfile = "%s/%s" % (dstdir, normalized_layerid + f"__{i}_subsetted.tif")
+            dstfile = "%s/%s" % (dstdir,
+                                 normalized_layerid + f"__{i}_subsetted.tif")
             dstfiles.append(dstfile)
             bbox = [str(c) for c in bbox]
             command = command + [
@@ -175,7 +177,8 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         if len(dstfiles) == 1:
             return dstfiles[0]
         else:
-            dstfile = "%s/%s" % (dstdir, normalized_layerid + "__subsetted.tif")
+            dstfile = "%s/%s" % (dstdir,
+                                 normalized_layerid + "__subsetted.tif")
             self.cmd("gdal_merge.py", "-o", dstfile, "-of", "GTiff", *dstfiles)
             return dstfile
 
@@ -306,8 +309,8 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
         layer_line = next(
-            filter((lambda line: line.endswith(":" + layer_id)), gdalinfo_lines), None
-        )
+            filter((lambda line: line.endswith(":" + layer_id)),
+                   gdalinfo_lines), None)
         if layer_line is None:
             print("Invalid Layer:", layer_id)
 
@@ -324,17 +327,18 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         result = []
         # Normal case of NetCDF / HDF, where variables are subdatasets
         for subdataset in filter(
-            (lambda line: re.match(r"^\s*SUBDATASET_\d+_NAME=", line)), gdalinfo_lines
-        ):
+            (lambda line: re.match(r"^\s*SUBDATASET_\d+_NAME=", line)),
+                gdalinfo_lines):
             result.append(ObjectView({"name": re.split(r":", subdataset)[-1]}))
         if len(result) > 0:
             return result
 
         # GeoTIFFs, where variables are bands, with descriptions set to their variable name
         for subdataset in filter(
-            (lambda line: re.match(r"^\s*Description = ", line)), gdalinfo_lines
-        ):
-            result.append(ObjectView({"name": re.split(r" = ", subdataset)[-1]}))
+            (lambda line: re.match(r"^\s*Description = ", line)),
+                gdalinfo_lines):
+            result.append(
+                ObjectView({"name": re.split(r" = ", subdataset)[-1]}))
         return result
 
     def is_geotiff(self, filename):
