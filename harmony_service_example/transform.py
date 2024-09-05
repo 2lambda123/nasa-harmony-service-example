@@ -29,12 +29,13 @@ mime_to_options = {"image/tiff": ["-co", "COMPRESS=LZW"]}
 
 
 class ObjectView(dict):
-    """
-    Simple class to make a dict look like an object.
-
+    """Simple class to make a dict look like an object.
+    
     Example
     --------
-        >>> o = ObjectView({ "key": "value" })
+
+
+    >>> o = ObjectView({ "key": "value" })
         >>> o.key
         'value'
     """
@@ -43,12 +44,14 @@ class ObjectView(dict):
 
 
 class HarmonyAdapter(BaseHarmonyAdapter):
-    """
-    See See https://github.com/nasa/harmony-service-lib-py
+    """See See https://github.com/nasa/harmony-service-lib-py
     for documentation and examples.
+
+
     """
 
     def invoke(self):
+        """ """
         catalogs = [Catalog("a", ""), Catalog("b", ""), Catalog("c", "")]
         for cat in catalogs:
             items = [
@@ -75,15 +78,12 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return (self.message, catalogs)
 
     def update_layernames(self, filename, layernames):
-        """
-        Updates the layers in the given file to match the list of layernames provided
+        """Updates the layers in the given file to match the list of layernames provided
 
-        Parameters
-        ----------
-        filename : string
-            The path to file whose layernames should be updated
-        layernames : string[]
-            An array of names, in order, to apply to the layers
+        :param filename: 
+        :param layernames: 
+
+        
         """
         ds = gdal.Open(filename)
         for i in range(len(layernames)):
@@ -91,19 +91,22 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         ds = None
 
     def prepare_output_dir(self, output_dir):
-        """
-        Deletes (if present) and recreates the given output_dir, ensuring it exists
+        """Deletes (if present) and recreates the given output_dir, ensuring it exists
         and is empty
 
-        Parameters
-        ----------
-        output_dir : string
-            the directory to delete and recreate
+        :param output_dir: 
+
+        
         """
         self.cmd("rm", "-rf", output_dir)
         self.cmd("mkdir", "-p", output_dir)
 
     def cmd(self, *args):
+        """
+
+        :param *args: 
+
+        """
         self.logger.info(
             args[0] + " " + " ".join(["'{}'".format(arg) for arg in args[1:]])
         )
@@ -111,6 +114,14 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return result_str.split("\n")
 
     def as_geotiff(self, layerid, srcfile, dstdir, band=None):
+        """
+
+        :param layerid: 
+        :param srcfile: 
+        :param dstdir: 
+        :param band:  (Default value = None)
+
+        """
         normalized_layerid = layerid.replace("/", "_")
         command = ["gdal_translate", "-of", "GTiff"]
         if band is not None:
@@ -123,6 +134,13 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return dstfile
 
     def subset(self, layerid, srcfile, dstdir):
+        """
+
+        :param layerid: 
+        :param srcfile: 
+        :param dstdir: 
+
+        """
         normalized_layerid = layerid.replace("/", "_")
         subset = self.message.subset
         if not subset or not subset.bbox:
@@ -159,6 +177,11 @@ class HarmonyAdapter(BaseHarmonyAdapter):
             return dstfile
 
     def _dataset_bounds(self, srcfile):
+        """
+
+        :param srcfile: 
+
+        """
         ds = gdal.Open(srcfile)
         x = ds.RasterXSize
         y = ds.RasterYSize
@@ -177,6 +200,13 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return (x_range, y_range)
 
     def reproject(self, layerid, srcfile, dstdir):
+        """
+
+        :param layerid: 
+        :param srcfile: 
+        :param dstdir: 
+
+        """
         srs = self.message.format.process("srs")
         if not (srs and srs.proj4):
             return srcfile
@@ -186,6 +216,13 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return dstfile
 
     def resize(self, layerid, srcfile, dstdir):
+        """
+
+        :param layerid: 
+        :param srcfile: 
+        :param dstdir: 
+
+        """
         command = ["gdal_translate"]
 
         fmt = self.message.format
@@ -204,6 +241,13 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return dstfile
 
     def add_to_result(self, layerid, srcfile, dstdir):
+        """
+
+        :param layerid: 
+        :param srcfile: 
+        :param dstdir: 
+
+        """
         tmpfile = "%s/tmp-result.tif" % (dstdir)
         dstfile = "%s/result.tif" % (dstdir)
 
@@ -222,6 +266,12 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return dstfile
 
     def reformat(self, srcfile, dstdir):
+        """
+
+        :param srcfile: 
+        :param dstdir: 
+
+        """
         output_mime = self.message.format.mime
         if output_mime not in mime_to_gdal:
             raise Exception("Unrecognized output format: " + output_mime)
@@ -244,6 +294,13 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return dstfile
 
     def read_layer_format(self, collection, filename, layer_id):
+        """
+
+        :param collection: 
+        :param filename: 
+        :param layer_id: 
+
+        """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
         layer_line = next(
             filter((lambda line: line.endswith(":" + layer_id)), gdalinfo_lines), None
@@ -255,6 +312,11 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return layer.replace(filename, "{}")
 
     def get_variables(self, filename):
+        """
+
+        :param filename: 
+
+        """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
         result = []
         # Normal case of NetCDF / HDF, where variables are subdatasets
@@ -273,5 +335,10 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         return result
 
     def is_geotiff(self, filename):
+        """
+
+        :param filename: 
+
+        """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
         return gdalinfo_lines[0] == "Driver: GTiff/GeoTIFF"
