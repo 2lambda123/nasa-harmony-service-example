@@ -4,7 +4,6 @@
 # example:
 #    python3 -m harmony_service_example --harmony-action invoke --harmony-input \
 #    "$(cat ../harmony/example/service-operation.json)"
-
 import datetime
 import os
 import re
@@ -14,10 +13,14 @@ from tempfile import mkdtemp
 
 from harmony import BaseHarmonyAdapter
 from harmony.exceptions import ServerException
-from harmony.util import (HarmonyException, download, generate_output_filename,
-                          stage)
+from harmony.util import download
+from harmony.util import generate_output_filename
+from harmony.util import HarmonyException
+from harmony.util import stage
 from osgeo import gdal
-from pystac import Asset, Catalog, Item
+from pystac import Asset
+from pystac import Catalog
+from pystac import Item
 
 from harmony_service_example.geo import clip_bbox
 
