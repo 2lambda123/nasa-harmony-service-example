@@ -33,7 +33,7 @@ mime_to_options = {"image/tiff": ["-co", "COMPRESS=LZW"]}
 
 class ObjectView(dict):
     """Simple class to make a dict look like an object.
-    
+
     Example
     --------
 
@@ -83,10 +83,10 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def update_layernames(self, filename, layernames):
         """Updates the layers in the given file to match the list of layernames provided
 
-        :param filename: 
-        :param layernames: 
+        :param filename:
+        :param layernames:
 
-        
+
         """
         ds = gdal.Open(filename)
         for i in range(len(layernames)):
@@ -97,9 +97,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
         """Deletes (if present) and recreates the given output_dir, ensuring it exists
         and is empty
 
-        :param output_dir: 
+        :param output_dir:
 
-        
+
         """
         self.cmd("rm", "-rf", output_dir)
         self.cmd("mkdir", "-p", output_dir)
@@ -107,7 +107,7 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def cmd(self, *args):
         """
 
-        :param *args: 
+        :param *args:
 
         """
         self.logger.info(
@@ -119,9 +119,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def as_geotiff(self, layerid, srcfile, dstdir, band=None):
         """
 
-        :param layerid: 
-        :param srcfile: 
-        :param dstdir: 
+        :param layerid:
+        :param srcfile:
+        :param dstdir:
         :param band:  (Default value = None)
 
         """
@@ -139,9 +139,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def subset(self, layerid, srcfile, dstdir):
         """
 
-        :param layerid: 
-        :param srcfile: 
-        :param dstdir: 
+        :param layerid:
+        :param srcfile:
+        :param dstdir:
 
         """
         normalized_layerid = layerid.replace("/", "_")
@@ -182,7 +182,7 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def _dataset_bounds(self, srcfile):
         """
 
-        :param srcfile: 
+        :param srcfile:
 
         """
         ds = gdal.Open(srcfile)
@@ -205,9 +205,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def reproject(self, layerid, srcfile, dstdir):
         """
 
-        :param layerid: 
-        :param srcfile: 
-        :param dstdir: 
+        :param layerid:
+        :param srcfile:
+        :param dstdir:
 
         """
         srs = self.message.format.process("srs")
@@ -221,9 +221,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def resize(self, layerid, srcfile, dstdir):
         """
 
-        :param layerid: 
-        :param srcfile: 
-        :param dstdir: 
+        :param layerid:
+        :param srcfile:
+        :param dstdir:
 
         """
         command = ["gdal_translate"]
@@ -246,9 +246,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def add_to_result(self, layerid, srcfile, dstdir):
         """
 
-        :param layerid: 
-        :param srcfile: 
-        :param dstdir: 
+        :param layerid:
+        :param srcfile:
+        :param dstdir:
 
         """
         tmpfile = "%s/tmp-result.tif" % (dstdir)
@@ -271,8 +271,8 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def reformat(self, srcfile, dstdir):
         """
 
-        :param srcfile: 
-        :param dstdir: 
+        :param srcfile:
+        :param dstdir:
 
         """
         output_mime = self.message.format.mime
@@ -299,9 +299,9 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def read_layer_format(self, collection, filename, layer_id):
         """
 
-        :param collection: 
-        :param filename: 
-        :param layer_id: 
+        :param collection:
+        :param filename:
+        :param layer_id:
 
         """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
@@ -317,7 +317,7 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def get_variables(self, filename):
         """
 
-        :param filename: 
+        :param filename:
 
         """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
@@ -340,7 +340,7 @@ class HarmonyAdapter(BaseHarmonyAdapter):
     def is_geotiff(self, filename):
         """
 
-        :param filename: 
+        :param filename:
 
         """
         gdalinfo_lines = self.cmd("gdalinfo", filename)
