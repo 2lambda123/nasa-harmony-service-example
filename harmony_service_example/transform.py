@@ -6,19 +6,20 @@
 #    "$(cat ../harmony/example/service-operation.json)"
 
 import datetime
-import subprocess
 import os
 import re
 import shutil
+import subprocess
 from tempfile import mkdtemp
 
-from harmony_service_example.geo import clip_bbox
 from harmony import BaseHarmonyAdapter
 from harmony.exceptions import ServerException
-from harmony.util import generate_output_filename, download, HarmonyException, stage
+from harmony.util import (HarmonyException, download, generate_output_filename,
+                          stage)
+from osgeo import gdal
 from pystac import Asset, Catalog, Item
 
-from osgeo import gdal
+from harmony_service_example.geo import clip_bbox
 
 mime_to_gdal = {"image/tiff": "GTiff", "image/png": "PNG", "image/gif": "GIF"}
 
